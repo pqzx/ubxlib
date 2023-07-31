@@ -22,6 +22,8 @@
  * of another module should be included here; otherwise
  * please keep #includes to your .c files. */
 
+#include "u_error_common.h"
+
 #include "u_device.h"
 #include "u_at_client.h"
 #include "u_short_range_module_type.h"

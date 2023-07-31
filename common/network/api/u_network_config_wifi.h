@@ -22,6 +22,8 @@
  * of another module should be included here; otherwise
  * please keep #includes to your .c files. */
 
+#include "u_network.h"
+
 /** \addtogroup network
  *  @{
  */

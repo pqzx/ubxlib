@@ -17,6 +17,9 @@
 #ifndef _U_COMMON_SPI_H_
 #define _U_COMMON_SPI_H_
 
+#include <stdbool.h>
+#include <stdint.h>
+
 /* This file is NOT PERMITTED to bring in any other header files; it
  * should compile in a .c file that only use types from stdint.h and
  * stdbool.h. */

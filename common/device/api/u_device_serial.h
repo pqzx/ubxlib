@@ -17,6 +17,10 @@
 #ifndef _U_DEVICE_SERIAL_H_
 #define _U_DEVICE_SERIAL_H_
 
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+
 /* Only header files representing a direct and unavoidable
  * dependency between the API of this module and the API
  * of another module should be included here; otherwise
