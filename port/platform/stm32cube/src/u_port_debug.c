@@ -33,7 +33,7 @@
 
 #include "u_error_common.h"
 
-#include "stm32f437xx.h" // For ITM_SendChar()
+#include "stm32h7a3xxq.h" // For ITM_SendChar()
 
 /* ----------------------------------------------------------------
  * COMPILE-TIME MACROS

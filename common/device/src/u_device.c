@@ -306,12 +306,12 @@ int32_t uDeviceClose(uDeviceHandle_t devHandle, bool powerOff)
 
     if (errorCode == 0) {
         switch (uDeviceGetDeviceType(devHandle)) {
-            case U_DEVICE_TYPE_CELL:
-                errorCode = uDevicePrivateCellRemove(devHandle, powerOff);
-                break;
-            case U_DEVICE_TYPE_GNSS:
-                errorCode = uDevicePrivateGnssRemove(devHandle, powerOff);
-                break;
+//            case U_DEVICE_TYPE_CELL:
+//                errorCode = uDevicePrivateCellRemove(devHandle, powerOff);
+//                break;
+//            case U_DEVICE_TYPE_GNSS:
+//                errorCode = uDevicePrivateGnssRemove(devHandle, powerOff);
+//                break;
             case U_DEVICE_TYPE_SHORT_RANGE:
                 if (!powerOff) {
                     errorCode = uDevicePrivateShortRangeRemove(devHandle);

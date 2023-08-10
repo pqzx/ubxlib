@@ -40,7 +40,7 @@
 #include "u_device.h"
 #include "u_sock_errno.h"
 #include "u_sock.h"
-#include "u_cell_sock.h"
+//#include "u_cell_sock.h"
 
 /* ----------------------------------------------------------------
  * PUBLIC FUNCTIONS

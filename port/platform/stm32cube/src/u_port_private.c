@@ -38,8 +38,8 @@
 #include "FreeRTOS.h"
 #include "timers.h"
 
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_ll_bus.h"
+#include "stm32h7xx_hal.h"
+#include "stm32h7xx_ll_bus.h"
 
 #include "u_port_private.h"  // Down here 'cos it needs GPIO_TypeDef
 
@@ -106,7 +106,7 @@ typedef struct uPortPrivateTimer_t {
  * -------------------------------------------------------------- */
 
 // Counter to keep track of RTOS ticks: NOT static
-// so that the stm32f4xx_it.c can update it.
+// so that the stm32h7xx_it.c can update it.
 int32_t gTickTimerRtosCount;
 
 // Get the GPIOx address for a given GPIO port.
@@ -124,17 +124,17 @@ static GPIO_TypeDef *const gpGpioReg[] = {GPIOA,
                                          };
 
 // Get the LL driver peripheral number for a given GPIO port.
-static const int32_t gLlApbGrpPeriphGpioPort[] = {LL_AHB1_GRP1_PERIPH_GPIOA,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOB,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOC,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOD,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOE,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOF,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOG,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOH,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOI,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOJ,
-                                                  LL_AHB1_GRP1_PERIPH_GPIOK
+static const int32_t gLlApbGrpPeriphGpioPort[] = {LL_AHB4_GRP1_PERIPH_GPIOA,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOB,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOC,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOD,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOE,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOF,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOG,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOH,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOI,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOJ,
+                                                  LL_AHB4_GRP1_PERIPH_GPIOK
                                                  };
 
 /** Root of the linked list of timers.

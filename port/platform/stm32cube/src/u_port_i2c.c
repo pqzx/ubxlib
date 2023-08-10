@@ -29,10 +29,10 @@
 #include "u_port_gpio.h" // For unblocking
 #include "u_port_i2c.h"
 
-#include "stm32f4xx_ll_bus.h"
-#include "stm32f4xx_ll_gpio.h"
-#include "stm32f4xx_ll_i2c.h"
-#include "stm32f4xx_hal_i2c.h"
+#include "stm32h7xx_ll_bus.h"
+#include "stm32h7xx_ll_gpio.h"
+#include "stm32h7xx_ll_i2c.h"
+#include "stm32h7xx_hal_i2c.h"
 
 #include "cmsis_os.h"
 
@@ -69,13 +69,13 @@
  * to carry around an entire I2C_HandleTypeDef.
  */
 #define U_PORT_HAL_I2C_GET_FLAG(__PREG__, __FLAG__) ((((uint8_t)((__FLAG__) >> 16U)) == 0x01U) ? \
-                                                     (((((__PREG__)->SR1) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET) : \
-                                                     (((((__PREG__)->SR2) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET))
+                                                     (((((__PREG__)->CR1) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET) : \
+                                                     (((((__PREG__)->CR2) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET))
 
 /** Version of __HAL_I2C_CLEAR_FLAG that doesn't require us
  * to carry around an entire I2C_HandleTypeDef.
  */
-#define U_PORT_HAL_I2C_CLEAR_FLAG(__PREG__, __FLAG__) ((__PREG__)->SR1 = ~((__FLAG__) & I2C_FLAG_MASK))
+#define U_PORT_HAL_I2C_CLEAR_FLAG(__PREG__, __FLAG__) ((__PREG__)->CR1 = ~((__FLAG__) & I2C_FLAG_MASK))
 
 /** Version of __HAL_I2C_CLEAR_ADDRFLAG that doesn't require us
  * to carry around an entire I2C_HandleTypeDef.
@@ -83,8 +83,8 @@
 #define U_PORT_HAL_I2C_CLEAR_ADDRFLAG(__PREG__)  \
   do{                                            \
     __IO uint32_t tmpreg = 0x00U;                \
-    tmpreg = (__PREG__)->SR1;                    \
-    tmpreg = (__PREG__)->SR2;                    \
+    tmpreg = (__PREG__)->CR1;                    \
+    tmpreg = (__PREG__)->CR2;                    \
     UNUSED(tmpreg);                              \
   } while(0)
 
@@ -295,12 +295,12 @@ static int32_t sendAddress(I2C_TypeDef *pReg, uint16_t address,
         if (waitFlagOk(pReg, I2C_FLAG_SB, SET, timeoutMs)) {
             if (address > 127) {
                 // Send the header for a 10-bit address with write set
-                pReg->DR = I2C_10BIT_HEADER_WRITE(address);
+                pReg->TXDR = I2C_10BIT_HEADER_WRITE(address);
                 // Wait until ADD10 flag is set
                 keepGoing = waitTransmitOk(pReg, I2C_FLAG_ADD10, timeoutMs);
                 if (keepGoing) {
                     // Now send the 10-bit address
-                    pReg->DR = I2C_10BIT_ADDRESS(address);
+                    pReg->TXDR = I2C_10BIT_ADDRESS(address);
                     if (readNotWrite) {
                         // For reads on a 10-bit address there is more
                         // to do: wait until ADDR flag is set
@@ -314,7 +314,7 @@ static int32_t sendAddress(I2C_TypeDef *pReg, uint16_t address,
                             keepGoing = waitFlagOk(pReg, I2C_FLAG_SB, SET, timeoutMs);
                             if (keepGoing) {
                                 // Send the header for a 10-bit address with read set this time
-                                pReg->DR = I2C_10BIT_HEADER_READ(address);
+                                pReg->TXDR = I2C_10BIT_HEADER_READ(address);
                             }
                         }
                     }
@@ -322,9 +322,9 @@ static int32_t sendAddress(I2C_TypeDef *pReg, uint16_t address,
             } else {
                 // A 7-bit address can be sent immediately
                 if (readNotWrite) {
-                    pReg->DR = I2C_7BIT_ADD_READ(address << 1);
+                    pReg->TXDR = I2C_7BIT_ADD_READ(address << 1);
                 } else {
-                    pReg->DR = I2C_7BIT_ADD_WRITE(address << 1);
+                    pReg->TXDR = I2C_7BIT_ADD_WRITE(address << 1);
                 }
             }
             if (keepGoing) {
@@ -357,12 +357,12 @@ static int32_t send(I2C_TypeDef *pReg, uint16_t address,
         while ((size > 0) && (errorCode == 0)) {
             if (waitTransmitOk(pReg, I2C_FLAG_TXE, timeoutMs)) {
                 // Write a byte
-                pReg->DR = *pData;
+                pReg->TXDR = *pData;
                 pData++;
                 size--;
                 if ((U_PORT_HAL_I2C_GET_FLAG(pReg, I2C_FLAG_BTF) == SET) && (size > 0)) {
                     // Write another byte
-                    pReg->DR = *pData;
+                    pReg->TXDR = *pData;
                     pData++;
                     size--;
                 }
@@ -436,7 +436,7 @@ static int32_t receive(I2C_TypeDef *pReg, uint16_t address,
                     keepGoing = waitFlagOk(pReg, I2C_FLAG_RXNE, SET, timeoutMs);
                     if (keepGoing) {
                         // Read the data from DR
-                        *pData = (char) pReg->DR;
+                        *pData = (char) pReg->RXDR;
                         pData++;
                         bytesToReceive--;
                     }
@@ -447,11 +447,11 @@ static int32_t receive(I2C_TypeDef *pReg, uint16_t address,
                         // Generate stop
                         SET_BIT(pReg->CR1, I2C_CR1_STOP);
                         // Read the data from DR
-                        *pData = (char) pReg->DR;
+                        *pData = (char) pReg->RXDR;
                         pData++;
                         bytesToReceive--;
                         // Read the data from DR
-                        *pData = (char) pReg->DR;
+                        *pData = (char) pReg->RXDR;
                         pData++;
                         bytesToReceive--;
                     }
@@ -462,7 +462,7 @@ static int32_t receive(I2C_TypeDef *pReg, uint16_t address,
                         // Disable acknowledge
                         CLEAR_BIT(pReg->CR1, I2C_CR1_ACK);
                         // Read the data from DR
-                        *pData = (char) pReg->DR;
+                        *pData = (char) pReg->RXDR;
                         pData++;
                         bytesToReceive--;
                         // Wait until BTF flag is set
@@ -471,11 +471,11 @@ static int32_t receive(I2C_TypeDef *pReg, uint16_t address,
                             // Generate stop
                             SET_BIT(pReg->CR1, I2C_CR1_STOP);
                             // Read the data from DR
-                            *pData = (char) pReg->DR;
+                            *pData = (char) pReg->RXDR;
                             pData++;
                             bytesToReceive--;
                             // Read the data from DR
-                            *pData = (char) pReg->DR;
+                            *pData = (char) pReg->RXDR;
                             pData++;
                             bytesToReceive--;
                         }
@@ -486,13 +486,13 @@ static int32_t receive(I2C_TypeDef *pReg, uint16_t address,
                 keepGoing = waitFlagOk(pReg, I2C_FLAG_RXNE, SET, timeoutMs);
                 if (keepGoing) {
                     // Read the data from DR
-                    *pData = (char) pReg->DR;
+                    *pData = (char) pReg->RXDR;
                     pData++;
                     bytesToReceive--;
                 }
                 if (U_PORT_HAL_I2C_GET_FLAG(pReg, I2C_FLAG_BTF) == SET) {
                     // Read the data from DR
-                    *pData = (char) pReg->DR;
+                    *pData = (char) pReg->RXDR;
                     pData++;
                     bytesToReceive--;
                 }

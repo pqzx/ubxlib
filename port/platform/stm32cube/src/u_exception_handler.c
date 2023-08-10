@@ -20,9 +20,9 @@
 
 #include "stdbool.h"
 
-#include "stm32f4xx.h"
+#include "stm32h7xx.h"
 #include "cmsis_os.h"
-#include "core_cm4.h"
+//#include "core_cm4.h"
 
 #include "task_snapshot.h"
 

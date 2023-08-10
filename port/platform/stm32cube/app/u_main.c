@@ -45,7 +45,7 @@
 
 
 #include "cmsis_os.h"
-#include "stm32f4xx.h"
+#include "stm32h7xx.h"
 #include "core_cm4.h"
 
 /* ----------------------------------------------------------------

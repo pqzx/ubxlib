@@ -40,8 +40,8 @@
 
 #include "FreeRTOS.h" // For xPortGetFreeHeapSize()
 #include "task.h"     // For taskENTER_CRITICAL()/taskEXIT_CRITICAL()
-#include "stm32f437xx.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7a3xxq.h"
+#include "stm32h7xx_hal.h"
 #ifdef CMSIS_V2
 # include "cmsis_os2.h"
 #else
@@ -78,7 +78,7 @@ static void systemClockConfig(void)
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
     // Configure the main internal regulator output voltage
-    __HAL_RCC_PWR_CLK_ENABLE();
+//    __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
     // Initialize the CPU, AHB and APB bus clocks
@@ -88,7 +88,7 @@ static void systemClockConfig(void)
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM = HSE_VALUE / 1000000U;
     RCC_OscInitStruct.PLL.PLLN = 336;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLP = 0x00000002U; // RCC_PLLP_DIV2;
     RCC_OscInitStruct.PLL.PLLQ = 7;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         U_ASSERT(false);
@@ -106,15 +106,15 @@ static void systemClockConfig(void)
     }
 }
 
-#ifdef USE_FULL_ASSERT
-void assert_failed(uint8_t *pFile, uint32_t line)
-{
-    // printf() rather than uPortLog so that it is always
-    // emitted, irrespective of whether debug is on or not
-    printf("assert %s: %"PRIu32"\n", pFile, line);
-    U_ASSERT(false);
-}
-#endif /* USE_FULL_ASSERT */
+//#ifdef USE_FULL_ASSERT
+//void assert_failed(uint8_t *pFile, uint32_t line)
+//{
+//    // printf() rather than uPortLog so that it is always
+//    // emitted, irrespective of whether debug is on or not
+//    printf("assert %s: %"PRIu32"\n", pFile, line);
+//    U_ASSERT(false);
+//}
+//#endif /* USE_FULL_ASSERT */
 
 /* ----------------------------------------------------------------
  * PUBLIC FUNCTIONS

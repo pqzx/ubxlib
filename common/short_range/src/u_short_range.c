@@ -775,21 +775,22 @@ int32_t uShortRangeOpenUart(uShortRangeModuleType_t moduleType,
         return handleOrErrorCode;
     }
 
-    handleOrErrorCode = uPortUartOpen(pUartConfig->uartPort,
-                                      pUartConfig->baudRate,
-                                      NULL,
-                                      U_SHORT_RANGE_UART_BUFFER_LENGTH_BYTES,
-                                      pUartConfig->pinTx,
-                                      pUartConfig->pinRx,
-                                      pUartConfig->pinCts,
-                                      pUartConfig->pinRts);
-
-    if (handleOrErrorCode < (int32_t) U_ERROR_COMMON_SUCCESS) {
-        return (int32_t) U_SHORT_RANGE_ERROR_INIT_UART;
-    }
+    // handled in main.c: MX_UART4_Init()
+//    handleOrErrorCode = uPortUartOpen(pUartConfig->uartPort,
+//                                      pUartConfig->baudRate,
+//                                      NULL,
+//                                      U_SHORT_RANGE_UART_BUFFER_LENGTH_BYTES,
+//                                      pUartConfig->pinTx,
+//                                      pUartConfig->pinRx,
+//                                      pUartConfig->pinCts,
+//                                      pUartConfig->pinRts);
+//
+//    if (handleOrErrorCode < (int32_t) U_ERROR_COMMON_SUCCESS) {
+//        return (int32_t) U_SHORT_RANGE_ERROR_INIT_UART;
+//    }
 
     //lint -e(838) Suppress previously assigned value has not been used
-    uartHandle = handleOrErrorCode;
+    uartHandle = 4; // handleOrErrorCode;
     handleOrErrorCode = uShortRangeEdmStreamInit();
 
     if (handleOrErrorCode != (int32_t) U_ERROR_COMMON_SUCCESS) {

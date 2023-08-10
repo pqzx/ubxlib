@@ -83,8 +83,8 @@
 #include "queue.h"
 #include "timers.h"
 
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_gpio.h"
+#include "stm32h7xx_hal.h"
+#include "stm32h7xx_hal_gpio.h"
 
 #include "u_port_private.h"  // Down here 'cos it needs GPIO_TypeDef
 
@@ -684,21 +684,21 @@ int32_t uPortTimerChange(const uPortTimerHandle_t timerHandle,
 
 // Stack overflow hook, employed when configCHECK_FOR_STACK_OVERFLOW is
 // set to 1 in FreeRTOSConfig.h.
-void vApplicationStackOverflowHook(TaskHandle_t taskHandle,
-                                   char *pTaskName)
-{
-    uPortLog("U_PORT: task handle 0x%08x, \"%s\", overflowed its"
-             " stack.\n", (int32_t) taskHandle, pTaskName);
-    U_ASSERT(false);
-}
+//void vApplicationStackOverflowHook(TaskHandle_t taskHandle,
+//                                   char *pTaskName)
+//{
+//    uPortLog("U_PORT: task handle 0x%08x, \"%s\", overflowed its"
+//             " stack.\n", (int32_t) taskHandle, pTaskName);
+//    U_ASSERT(false);
+//}
 
 // Malloc failed hook, employed when configUSE_MALLOC_FAILED_HOOK is
 // set to 1 in FreeRTOSConfig.h.
-void vApplicationMallocFailedHook()
-{
-    uPortLog("U_PORT: freeRTOS doesn't have enough heap, increase"
-             " configTOTAL_HEAP_SIZE in FreeRTOSConfig.h.\n");
-    U_ASSERT(false);
-}
+//void vApplicationMallocFailedHook()
+//{
+//    uPortLog("U_PORT: freeRTOS doesn't have enough heap, increase"
+//             " configTOTAL_HEAP_SIZE in FreeRTOSConfig.h.\n");
+//    U_ASSERT(false);
+//}
 
 // End of file

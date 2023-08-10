@@ -38,7 +38,7 @@
 #include "u_compiler.h" // U_WEAK
 #include "u_error_common.h"
 #include "u_device.h"
-#include "u_cell_mqtt.h"
+//#include "u_cell_mqtt.h"
 
 /* ----------------------------------------------------------------
  * PUBLIC FUNCTIONS

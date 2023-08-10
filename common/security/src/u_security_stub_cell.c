@@ -39,7 +39,7 @@
 #include "u_error_common.h"
 #include "u_device.h"
 #include "u_security.h"
-#include "u_cell_sec.h"
+//#include "u_cell_sec.h"
 
 /* ----------------------------------------------------------------
  * PUBLIC FUNCTIONS

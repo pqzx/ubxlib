@@ -3117,9 +3117,14 @@ void uAtClientCommandStart(uAtClientHandle_t atHandle,
         // Wait for delay period if required, constructed this way
         // to be safe if uPortGetTickTimeMs() wraps
         if (pClient->delayMs > 0) {
+            int32_t tickTime = -1;
+            int32_t lastResponse = -1;
             while (uPortGetTickTimeMs() - pClient->lastResponseStopMs < pClient->delayMs) {
+                tickTime = uPortGetTickTimeMs();
+                lastResponse = pClient->lastResponseStopMs;
                 uPortTaskBlock(10);
             }
+            printf("%ld %ld", tickTime, lastResponse);
         }
 
         // Send the command, no delimiter at first

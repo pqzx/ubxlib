@@ -31,11 +31,11 @@
 #include "u_port_os.h"
 #include "u_port_spi.h"
 
-#include "stm32f4xx_ll_bus.h"
-#include "stm32f4xx_ll_rcc.h"
-#include "stm32f4xx_ll_gpio.h"
-#include "stm32f4xx_ll_spi.h"
-#include "stm32f4xx_hal_spi.h"
+#include "stm32h7xx_ll_bus.h"
+#include "stm32h7xx_ll_rcc.h"
+#include "stm32h7xx_ll_gpio.h"
+#include "stm32h7xx_ll_spi.h"
+#include "stm32h7xx_hal_spi.h"
 
 #include "u_port_private.h"      // Down here 'cos it needs GPIO_TypeDef
 

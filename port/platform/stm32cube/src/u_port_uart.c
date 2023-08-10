@@ -43,10 +43,10 @@
 #include "u_port_event_queue.h"
 #include "u_port_uart.h"
 
-#include "stm32f4xx_ll_bus.h"
-#include "stm32f4xx_ll_gpio.h"
-#include "stm32f4xx_ll_dma.h"
-#include "stm32f4xx_ll_usart.h"
+#include "stm32h7xx_ll_bus.h"
+#include "stm32h7xx_ll_gpio.h"
+#include "stm32h7xx_ll_dma.h"
+#include "stm32h7xx_ll_usart.h"
 
 #include "cmsis_os.h"
 
@@ -242,17 +242,17 @@ static const IRQn_Type *gpDmaStreamIrq[] = {
     gDma2StreamIrq
 };
 
-// Table of LL_DMA_CHANNEL_x per channel
-static const int32_t gLlDmaChannel[] = {
-    LL_DMA_CHANNEL_0,
-    LL_DMA_CHANNEL_1,
-    LL_DMA_CHANNEL_2,
-    LL_DMA_CHANNEL_3,
-    LL_DMA_CHANNEL_4,
-    LL_DMA_CHANNEL_5,
-    LL_DMA_CHANNEL_6,
-    LL_DMA_CHANNEL_7
-};
+//// Table of LL_DMA_CHANNEL_x per channel
+//static const int32_t gLlDmaChannel[] = {
+//    LL_DMA_CHANNEL_0,
+//    LL_DMA_CHANNEL_1,
+//    LL_DMA_CHANNEL_2,
+//    LL_DMA_CHANNEL_3,
+//    LL_DMA_CHANNEL_4,
+//    LL_DMA_CHANNEL_5,
+//    LL_DMA_CHANNEL_6,
+//    LL_DMA_CHANNEL_7
+//};
 
 // Table of functions LL_DMA_ClearFlag_HTx(DMA_TypeDef *DMAx) for each stream.
 static const uDmaFunc_t gpLlDmaClearFlagHt[]  = {
@@ -947,7 +947,7 @@ int32_t uPortUartOpen(int32_t uart, int32_t baudRate,
     uint32_t dmaEngine;
     DMA_TypeDef *pDmaReg;
     uint32_t dmaStream;
-    uint32_t dmaChannel;
+//    uint32_t dmaChannel;
     IRQn_Type uartIrq;
     IRQn_Type dmaIrq;
 
@@ -981,7 +981,7 @@ int32_t uPortUartOpen(int32_t uart, int32_t baudRate,
                     dmaEngine = gUartCfg[uart].dmaEngine;
                     pDmaReg = gpDmaReg[dmaEngine];
                     dmaStream = gUartCfg[uart].dmaStream;
-                    dmaChannel = gUartCfg[uart].dmaChannel;
+//                    dmaChannel = gUartCfg[uart].dmaChannel;
                     uartIrq = gUartCfg[uart].irq;
                     dmaIrq = gpDmaStreamIrq[dmaEngine][dmaStream];
 
@@ -1040,8 +1040,8 @@ int32_t uPortUartOpen(int32_t uart, int32_t baudRate,
                     // Configure DMA
                     if (platformError == SUCCESS) {
                         // Set the channel on our DMA/Stream
-                        LL_DMA_SetChannelSelection(pDmaReg, dmaStream,
-                                                   gLlDmaChannel[dmaChannel]);
+//                        LL_DMA_SetChannelSelection(pDmaReg, dmaStream,
+//                                                   gLlDmaChannel[dmaChannel]);
                         // Towards RAM
                         LL_DMA_SetDataTransferDirection(pDmaReg, dmaStream,
                                                         LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
@@ -1066,7 +1066,7 @@ int32_t uPortUartOpen(int32_t uart, int32_t baudRate,
 
                         // Attach the DMA to the UART at one end
                         LL_DMA_SetPeriphAddress(pDmaReg, dmaStream,
-                                                (uint32_t) & (pUartReg->DR));
+                                                (uint32_t) & (pUartReg->RDR));
 
                         // ...and to the RAM buffer at the other end
                         LL_DMA_SetMemoryAddress(pDmaReg, dmaStream,
